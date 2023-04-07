@@ -1,0 +1,141 @@
+:root {
+    --grid-cols: 16;
+    --grid-rows: 16;
+
+    --canvas-bg-color: white;
+
+    --bg-color1: whitesmoke;
+    --bg-color2: gainsboro;
+    --font-color1: black;
+    --font-color2: white;
+    --btn-number-color: orange;
+    --btn-clear-color: red;
+    --btn-operator-color: darkcyan;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a, a:hover, a:focus, a:active {
+    text-decoration: none;
+    color: inherit;
+}
+
+button{
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+    flex-grow: 1;
+    flex-basis: content;
+    width: 100%;
+    color: var(--font-color2);
+    padding: 8px 8px;
+    border-radius: 4px;
+    background-color: var(--btn-number-color);
+}
+
+button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(2px);
+}
+
+.html {
+    background-color: whitesmoke;
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 400px;
+    padding: 15px;
+    background-color: #404040;
+    margin: 40px auto;
+
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    
+}
+
+.display {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    width: 100%;
+    height: 50px;
+    border-radius: 4px;
+    background-color: black;
+    padding: 5px 10px;
+    font-size: 2rem;
+}
+
+.display__text {
+    color: white;
+    text-align: end;
+}
+
+.buttons {
+    width: 100%;
+    height: 300px;
+    display: grid;
+    gap: 6px;
+    font-size: 2rem;
+
+    grid-template-areas: 
+    "c  ce  mod  p1  p2" 
+    "n7  n8  n9  sqr  exp" 
+    "n4  n5  n6  mtp  div" 
+    "n1  n2  n3  add  sub" 
+    "n0  dot  inv  add  eq";
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+}
+
+[data-value="C"] { grid-area: c; }
+[data-value="CE"] { grid-area: ce; }
+[data-value="1"] { grid-area: n1; }
+[data-value="2"] { grid-area: n2; }
+[data-value="3"] { grid-area: n3; }
+[data-value="4"] { grid-area: n4; }
+[data-value="5"] { grid-area: n5; }
+[data-value="6"] { grid-area: n6; }
+[data-value="7"] { grid-area: n7; }
+[data-value="8"] { grid-area: n8; }
+[data-value="9"] { grid-area: n9; }
+[data-value="0"] { grid-area: n0; }
+[data-value="."] { grid-area: dot; }
+[data-value="("] { grid-area: p1; }
+[data-value=")"] { grid-area: p2; }
+[data-value="%"] { grid-area: mod; }
+[data-value="SQR"] { grid-area: sqr; }
+[data-value="^"] { grid-area: exp; }
+[data-value="/"] { grid-area: div; }
+[data-value="*"] { grid-area: mtp; }
+[data-value="+"] { grid-area: add; }
+[data-value="-"] { grid-area: sub; }
+[data-value="+-"] { grid-area: inv; }
+[data-value="="] { grid-area: eq; }
+
+[data-type="clear"] {
+    background-color: var(--btn-clear-color);
+}
+
+[data-type="number"] {
+    background-color: var(--btn-number-color);
+}
+
+[data-type="operator"] {
+    background-color: var(--btn-operator-color);
+}

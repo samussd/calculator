@@ -6,6 +6,9 @@
         <title>CALCULATOR</title>
         <meta name="description" content="Calculator">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,900;1,300&display=swap" rel="stylesheet">
         <script src="scripts/script.js" async defer></script>
         <link rel="stylesheet" href="styles.css">
     </head>
@@ -13,12 +16,37 @@
         <main class="main">
             <div class="calculator">
 
-                <div class="calculator__display">
-                    display
+                <div class="display">
+                    <div class="display__text">
+                        ...
+                    </div>
                 </div>
 
-                <div class="calculator__buttons">
-                    button grid
+                <div class="buttons">
+                    <button class="button" data-type="clear" data-value="C">C</button>
+                    <button class="button" data-type="clear" data-value="CE">CE</button>
+                    <button class="button" data-type="number" data-value="1">1</button>
+                    <button class="button" data-type="number" data-value="2">2</button>
+                    <button class="button" data-type="number" data-value="3">3</button>
+                    <button class="button" data-type="number" data-value="4">4</button>
+                    <button class="button" data-type="number" data-value="5">5</button>
+                    <button class="button" data-type="number" data-value="6">6</button>
+                    <button class="button" data-type="number" data-value="7">7</button>
+                    <button class="button" data-type="number" data-value="8">8</button>
+                    <button class="button" data-type="number" data-value="9">9</button>
+                    <button class="button" data-type="number" data-value="0">0</button>
+                    <button class="button" data-type="number" data-value=".">.</button>
+                    <button class="button" data-type="operator" data-value="(">(</button>
+                    <button class="button" data-type="operator" data-value=")">)</button>
+                    <button class="button" data-type="operator" data-value="%">%</button>
+                    <button class="button" data-type="operator" data-value="√">√</button>
+                    <button class="button" data-type="operator" data-value="^">^</button>
+                    <button class="button" data-type="operator" data-value="/">÷</button>
+                    <button class="button" data-type="operator" data-value="*">×</button>
+                    <button class="button" data-type="operator" data-value="+">+</button>
+                    <button class="button" data-type="operator" data-value="-">-</button>
+                    <button class="button" data-type="operator" data-value="+-">+/-</button>
+                    <button class="button" data-type="operator" data-value="=">=</button>
                 </div>
 
             </div>
