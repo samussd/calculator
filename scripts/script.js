@@ -1,35 +1,110 @@
-const displayText = document.querySelector('.display__text');
+const displayTextTop = document.querySelector('.display__top-text');
+const displayTextBot = document.querySelector('.display__bot-text');
+
 const buttons = document.querySelectorAll('.button');
 
-let expressionText = '';
 
-buttons.forEach(n => {n.addEventListener("click", function(e) {
-        btn = e.target;
-        if (btn.dataset.value === '='){
-            let result = solveExpression(expressionText);
-            expressionText = result;
+let savedNum = '';
+let operator = '';
+let inputNum = '';
+let equalOperatorDisplay = '';
+
+function handleInput(e) {
+    let btn = e.target;
+    let pressed = btn.dataset.value;
+    let type = btn.dataset.type;
+    
+    if (!isNaN(pressed)) {
+        if (!(pressed==='0' && (inputNum=='0' || !inputNum))) inputNum += pressed;
+    }
+    else if (pressed === '.') {
+
+        if (!inputNum.includes('.')) inputNum += (inputNum) ? '.' : '0.';
+
+    }
+    else if (pressed === '+-') {
+        if (operator==='='){
+            inputNum = savedNum;
+            savedNum = '';
+            operator = '';
         }
-        else if (btn.dataset.value === 'C') {
-            expressionText = expressionText.slice(0,-1);
+
+        if (inputNum.charAt(0)==='-') inputNum = inputNum.slice(1);
+            else if (+inputNum!==0) inputNum = '-' + inputNum;
+
+    }
+    else if (['^','×','/','+','-'].includes(pressed) && (savedNum || inputNum)) {
+
+        if (savedNum && operator && inputNum) {
+            savedNum = operate(+savedNum, +inputNum, operator).toString();
+            inputNum = '';
         }
-        else if (btn.dataset.value === 'CE') {
-            expressionText = '';
+        else if (operator) {
+            operator = pressed;
         }
         else {
-            expressionText += btn.dataset.value;
+            savedNum = inputNum;
+            inputNum = '';
         }
-        updateDisplay();
-    });
-});
+        operator = pressed;
 
+    }
+    else if (pressed === '√') {
+        if (!savedNum) equalOperatorDisplay = `√${inputNum} =`;
+        inputNum = Math.sqrt(+inputNum).toString();
+    }
 
-function updateDisplay() {
-    displayText.textContent = expressionText;
+    else if (pressed === '=') {
+
+        if (savedNum && operator && inputNum) {
+            equalOperatorDisplay = `${savedNum} ${operator} ${inputNum} =`;
+            inputNum = operate(+savedNum, +inputNum, operator).toString();
+            savedNum = '';
+            operator = '';
+        }
+
+    }
+    else if (pressed === 'C') {
+
+        inputNum = inputNum.slice(0,-1);
+
+    }
+    else if (pressed === 'CE') {
+        
+        inputNum = '';
+        savedNum = '';
+        operator = '';
+    }
+
+    if (equalOperatorDisplay) {
+        displayTextTop.textContent = equalOperatorDisplay;
+        equalOperatorDisplay = '';
+    }
+    else {
+        displayTextTop.textContent = `${savedNum} ${operator}`;
+    }
+    displayTextBot.textContent = (inputNum) ? `${inputNum}` : (savedNum) ? `${savedNum}` : '0';
+
+    if (inputNum==="Infinity" || inputNum==="NaN" || savedNum==="Infinity" || savedNum==="NaN") {
+        inputNum = '';
+        savedNum = '';
+        operator = '';
+    }
 }
+
+buttons.forEach(n => n.addEventListener("click", e => handleInput(e)));
+
+
 
 // SUPORT FUNCTIONS //
 /** Returns true if character is an operator */
-const isOperator = char => ['√','!','^','%','/','*','+','-'].includes(char);
+const isOperator = char => ['√','!','^','%','÷','/','×','*','+','-'].includes(char);
+
+/** Returns true if it's a negative symbol before a number (not an operator) */
+const isNegativePrefix = (expr, i) => {
+    if (expr.length-1 < i+1) return false;
+    return ( (i-1<0 || isOperator(expr[i-1])) && expr[i]==='-' && !isNaN(expr[i+1]) )
+}
 
 /** Returns position of matching parentheses */
 const findMatchingParenthesis = (expr, start) => {
@@ -48,15 +123,14 @@ const findMatchingParenthesis = (expr, start) => {
 
 /** Performs a basic operations between two numbers */
 function operate(a, b, op) {
-    switch (op) {
-        case "+": return a+b;
-        case "-": return a-b;
-        case "*": return a*b;
-        case "/": return a/b;
-        case "%": return a%b;
-        case "^": return a**b;
-        default: return NaN;
-    }
+    if (op==='+') return a+b;
+    else if (op==='-') return a-b;
+    else if (op==='×'||op==='*') return a*b;
+    else if (op==='÷'||op==='/') return a/b;
+    else if (op==='%') return a%b;
+    else if (op==='^') return a**b;
+    else return NaN;
+    
 }
 
 /** Returns the factorial of a number */
@@ -79,23 +153,26 @@ function exprToArray(expr) {
     let i = 0, l=expr.length;
 
     while (i<l) {
-        if (isOperator(expr[i])) {      //if it is an operator, push to array
+        //if it is an operator, push to array
+        if (isOperator(expr[i]) && !isNegativePrefix(expr, i)) {
 
             exprArray.push(expr[i]);
             i++;
 
-        }
-        else if (!isNaN(expr[i])) {     //if it is a number, find whole number and push
+        } 
+        //if it is a number (negative or not), find whole number and push
+        else if (!isNaN(expr[i]) || isNegativePrefix(expr, i)) { 
 
             let currentNum = '';
-            while (!isNaN(expr[i]) || expr[i]==='.') {
+            while (!isNaN(expr[i]) || expr[i]==='.' || isNegativePrefix(expr, i)) {
                 currentNum += expr[i];
                 i++;
             }
             exprArray.push(+currentNum);
 
         } 
-        else if (expr[i] === '(') {     //if it is a parenthesis, solve expression inside
+        //if it is a parenthesis, solve expression inside
+        else if (expr[i] === '(') {
 
             let lastPar = findMatchingParenthesis(expr, i);
             let numberResult = solveExpression(expr.slice(i+1, lastPar));
@@ -103,21 +180,19 @@ function exprToArray(expr) {
             i = lastPar;
 
         }
-        
         else i++;
     }
-
     return exprArray;
 }
 
 /** Calculates an expression inside an array - Uses P-E-MD-AS, from left to right when ambiguous */
 function calculateExpression(arr) {
-    const operations = [['^'],['%','*',"/"],["+","-"]];
+    const operations = [['^'],['%','×','*','/','÷'],['+','-']];
 
     //handles unary operations
     for (let i=0; i < arr.length; i++) {
         if (arr[i] === '!') {
-            arr.splice(i, 2, factorial(arr[i+1]));
+            arr.splice(i-1, 2, factorial(arr[i-1]));
         }
         else if (arr[i] === '√') {
             arr.splice(i, 2, Math.sqrt(arr[i+1]));

@@ -70,20 +70,29 @@ button:active {
 
 .display {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
 
     width: 100%;
-    height: 50px;
+    height: 5rem;
+    gap: 10px;
     border-radius: 4px;
     background-color: black;
     padding: 5px 10px;
     font-size: 2rem;
 }
 
-.display__text {
+.display__bot-text {
     color: white;
     text-align: end;
+}
+
+.display__top-text {
+    color: white;
+    opacity: .5;
+    text-align: end;
+    font-size: 1rem;
 }
 
 .buttons {
@@ -119,10 +128,10 @@ button:active {
 [data-value="("] { grid-area: p1; }
 [data-value=")"] { grid-area: p2; }
 [data-value="%"] { grid-area: mod; }
-[data-value="SQR"] { grid-area: sqr; }
+[data-value="√"] { grid-area: sqr; }
 [data-value="^"] { grid-area: exp; }
 [data-value="/"] { grid-area: div; }
-[data-value="*"] { grid-area: mtp; }
+[data-value="×"] { grid-area: mtp; }
 [data-value="+"] { grid-area: add; }
 [data-value="-"] { grid-area: sub; }
 [data-value="+-"] { grid-area: inv; }
