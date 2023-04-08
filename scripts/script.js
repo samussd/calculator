@@ -16,9 +16,9 @@ function handleInput(e) {
     
     if (!isNaN(pressed)) {
         if (!(pressed==='0' && (inputNum=='0' || !inputNum))) inputNum += pressed;
+        
     }
     else if (pressed === '.') {
-
         if (!inputNum.includes('.')) inputNum += (inputNum) ? '.' : '0.';
 
     }
@@ -28,13 +28,34 @@ function handleInput(e) {
             savedNum = '';
             operator = '';
         }
-
         if (inputNum.charAt(0)==='-') inputNum = inputNum.slice(1);
             else if (+inputNum!==0) inputNum = '-' + inputNum;
 
     }
-    else if (['^','×','/','+','-'].includes(pressed) && (savedNum || inputNum)) {
+    else if (pressed === '√' && inputNum) {
+        if (!savedNum) equalOperatorDisplay = `√${inputNum} =`;
+        inputNum = Math.sqrt(+inputNum).toString();
 
+    }
+    else if (pressed === '!' && inputNum) {
+        if (!savedNum) equalOperatorDisplay = `${inputNum}! =`;
+        inputNum = factorial(+inputNum).toString();
+
+    }
+    else if (pressed === '%' && inputNum) {
+        if (!savedNum) {
+            equalOperatorDisplay = `${inputNum}% =`;
+            inputNum = (inputNum/100).toString();
+        }
+        else if (['×','*','+','-'].includes(operator)) {
+            equalOperatorDisplay = `${savedNum} ${operator} ${inputNum}% =`;
+            if (operator==='-') inputNum = savedNum - (inputNum/100)*savedNum;
+            if (operator==='+') inputNum = savedNum + (inputNum/100)*savedNum;
+            if (operator==='×'||operator==='*') inputNum = (inputNum/100)*savedNum;
+        }
+
+    }
+    else if (['^','×','/','+','-'].includes(pressed) && (savedNum || inputNum)) {
         if (savedNum && operator && inputNum) {
             savedNum = operate(+savedNum, +inputNum, operator).toString();
             inputNum = '';
@@ -49,32 +70,24 @@ function handleInput(e) {
         operator = pressed;
 
     }
-    else if (pressed === '√') {
-        if (!savedNum) equalOperatorDisplay = `√${inputNum} =`;
-        inputNum = Math.sqrt(+inputNum).toString();
-    }
-
     else if (pressed === '=') {
-
         if (savedNum && operator && inputNum) {
             equalOperatorDisplay = `${savedNum} ${operator} ${inputNum} =`;
             inputNum = operate(+savedNum, +inputNum, operator).toString();
             savedNum = '';
             operator = '';
         }
-
     }
     else if (pressed === 'C') {
-
         inputNum = inputNum.slice(0,-1);
 
     }
     else if (pressed === 'CE') {
-        
         inputNum = '';
         savedNum = '';
         operator = '';
     }
+
 
     if (equalOperatorDisplay) {
         displayTextTop.textContent = equalOperatorDisplay;
@@ -135,6 +148,7 @@ function operate(a, b, op) {
 
 /** Returns the factorial of a number */
 function factorial(n) {
+    if (n%1!==0) return NaN;
     if (n < 0) return;
     if (n < 2) return 1;
     return n * factorial(n - 1);

@@ -103,8 +103,8 @@ button:active {
     font-size: 2rem;
 
     grid-template-areas: 
-    "c  ce  mod  p1  p2" 
-    "n7  n8  n9  sqr  exp" 
+    "c  ce  mod  sqr  fac" 
+    "n7  n8  n9  p1  exp" 
     "n4  n5  n6  mtp  div" 
     "n1  n2  n3  add  sub" 
     "n0  dot  inv  add  eq";
@@ -126,7 +126,7 @@ button:active {
 [data-value="0"] { grid-area: n0; }
 [data-value="."] { grid-area: dot; }
 [data-value="("] { grid-area: p1; }
-[data-value=")"] { grid-area: p2; }
+[data-value="!"] { grid-area: fac; }
 [data-value="%"] { grid-area: mod; }
 [data-value="√"] { grid-area: sqr; }
 [data-value="^"] { grid-area: exp; }
