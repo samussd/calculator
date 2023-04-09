@@ -8,7 +8,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,900;1,300&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
         <script src="scripts/script.js" async defer></script>
         <link rel="stylesheet" href="styles.css">
     </head>
@@ -22,7 +23,7 @@
                 </div>
 
                 <div class="buttons">
-                    <button class="button" data-type="clear" data-value="C">C</button>
+                    <button class="button" data-type="clear" data-value="C">⬅</button>
                     <button class="button" data-type="clear" data-value="CE">CE</button>
                     <button class="button" data-type="number" data-value="1">1</button>
                     <button class="button" data-type="number" data-value="2">2</button>
@@ -35,20 +36,22 @@
                     <button class="button" data-type="number" data-value="9">9</button>
                     <button class="button" data-type="number" data-value="0">0</button>
                     <button class="button" data-type="number" data-value=".">.</button>
-                    <button class="button" data-type="operator" data-value="(">(</button>
-                    <button class="button" data-type="operator" data-value="!">!</button>
-                    <button class="button" data-type="operator" data-value="%">%</button>
-                    <button class="button" data-type="operator" data-value="√">√</button>
+                    <button class="button" data-type="special-op" data-value="(">(</button>
+                    <button class="button" data-type="special-op" data-value=")">)</button>
+                    <button class="button" data-type="special-op" data-value="!">!</button>
+                    <button class="button" data-type="special-op" data-value="%">%</button>
+                    <button class="button" data-type="special-op" data-value="√">√</button>
                     <button class="button" data-type="operator" data-value="^">^</button>
                     <button class="button" data-type="operator" data-value="/">÷</button>
                     <button class="button" data-type="operator" data-value="×">×</button>
                     <button class="button" data-type="operator" data-value="+">+</button>
                     <button class="button" data-type="operator" data-value="-">-</button>
-                    <button class="button" data-type="operator" data-value="+-">+/-</button>
-                    <button class="button" data-type="operator" data-value="=">=</button>
+                    <button class="button" data-type="special-op" data-value="+-">±</button>
+                    <button class="button" data-type="special-op" data-value="=">=</button>
                 </div>
 
             </div>
+            <div class="main__error-msg"></div>
         </main>
     </body>
 </html>
