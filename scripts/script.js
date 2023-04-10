@@ -1,10 +1,11 @@
 const displayTextTop = document.querySelector('.display__top-text');
 const displayTextBot = document.querySelector('.display__bot-text');
 const errorMsg = document.querySelector('.main__error-msg');
+const modeMsg = document.querySelector('.main__mode-msg');
 
 const buttons = document.querySelectorAll('.button');
 
-let mode = 'quick';
+let mode = 'simple';
 
 let savedNum = '';
 let operator = '';
@@ -12,15 +13,12 @@ let inputNum = '';
 let expression = '';
 let equalOperatorDisplay = '';
 
-/** Handles logic for the 'quick' mode; 
+/** Handles logic for the 'simple' mode; 
  * You can only have one operation happening at a time on your display. 
  * Every time an operator is pressed, it performs the current operation 
  * and saves the result for the next one.
 */
-function quickCalc(e) {
-    let btn = e.target;
-    let pressed = btn.dataset.value;
-    
+function simpleCalculator(pressed) {
     //basic number input logic
     if (!isNaN(pressed)) {
         if (pressed!=='0' && inputNum==='0') inputNum = pressed;
@@ -82,17 +80,17 @@ function quickCalc(e) {
             operator = '';
         }
     }
+    //clear buttons
     else if (pressed === 'C') {
         inputNum = inputNum.slice(0,-1);
-
     }
-    else if (pressed === 'CE') {
+    else if (pressed === 'CA') {
         inputNum = '';
         savedNum = '';
         operator = '';
     }
 
-
+    //display the 'expression = something' once
     if (equalOperatorDisplay) {
         displayTextTop.textContent = equalOperatorDisplay;
         equalOperatorDisplay = '';
@@ -113,10 +111,8 @@ function quickCalc(e) {
  * You can type a longer expression with multiple operators, including parentheses. 
  * The expression is evaluated once you click the '=' button.
 */
-function expressionCalc(e) {
-    let btn = e.target;
-    let pressed = btn.dataset.value;
-    
+function expressionCalculator(pressed) {
+    //basic number input logic
     if (!isNaN(pressed)) {
         if (pressed!=='0' && inputNum==='0') inputNum = pressed;
         else if (inputNum!=='0') inputNum += pressed;
@@ -131,6 +127,7 @@ function expressionCalc(e) {
             else if (+inputNum!==0) inputNum = '-' + inputNum;
 
     }
+    //the √ ! % operations are added together with the input number
     else if (pressed === '√') {
         if (inputNum) {
             expression += '√';
@@ -158,21 +155,32 @@ function expressionCalc(e) {
         else expression += '%';
 
     }
+    //cant close parenthesis on an operator or if there is nothing
     else if (pressed === ')') {
-        expression += inputNum;
-        expression += pressed;
-        inputNum = '';
+        let lastChar = (expression+inputNum).slice(-1);
+        if (lastChar && !isOperator(lastChar) && lastChar!=='(') {
+            expression += inputNum;
+            expression += pressed;
+            inputNum = '';
+        }
+
     }
+    //if you open a parenthesis without an operator before, add multiplication by default
     else if (pressed === '(') {
         let lastChar = (expression+inputNum).slice(-1);
         expression += inputNum;
-        if (inputNum && (['!','%',')'].includes(lastChar) || !isNaN(lastChar)) ) expression += '×';
+        if (['!','%',')'].includes(lastChar) || (lastChar && !isNaN(lastChar))) expression += '×';
         expression += pressed;
         inputNum = '';
+
     }
     else if (['^','×','/','+','-','('].includes(pressed)) {
         let lastChar = (expression+inputNum).slice(-1);
-        if (!['^','×','/','+','-','('].includes(lastChar)) {
+        if (['^','×','/','+','-'].includes(lastChar)) {
+            expression = expression.slice(0,-1);
+            expression += pressed;
+        }
+        else if (lastChar && lastChar!=='('){
             expression += inputNum;
             expression += pressed;
             inputNum = '';
@@ -180,8 +188,8 @@ function expressionCalc(e) {
     }
     else if (pressed === '=') {
         expression += inputNum;
-        equalOperatorDisplay = `${beautifyExpression(expression)} =`
-        inputNum = solveExpression(expression.replace(/\s+/g, '')).toString();
+        equalOperatorDisplay = `${beautifyExpression(expression)} =`;
+        inputNum = solveExpression(expression).toString();
         expression = '';
     }
     else if (pressed === 'C') {
@@ -189,7 +197,7 @@ function expressionCalc(e) {
         else expression = expression.slice(0,-1);
 
     }
-    else if (pressed === 'CE') {
+    else if (pressed === 'CA') {
         inputNum = '';
         expression = '';
     }
@@ -203,32 +211,22 @@ function expressionCalc(e) {
         displayTextTop.textContent = beautifyExpression(expression) + inputNum;
     }
     displayTextBot.textContent = (inputNum) ? inputNum : '0';
-}
 
-/** Add spaces around operators, unless it is a negation operator */
-const beautifyExpression = str => {
-    let result = '';
-    
-    for (let i = 0; i < str.length; i++) {
-        if (['^','×','/','+','-'].includes(str[i])) {
-            if (isNegationOp(str,i)) result += ` ${str[i]}`;
-            else result += ` ${str[i]} `;
-        } else {
-            result += str[i];
-        }
+    if (inputNum==="Infinity" || inputNum==="NaN" || savedNum==="Infinity" || savedNum==="NaN") {
+        inputNum = '';
+        expression = '';
     }
-
-    return result;
 }
 
-buttons.forEach(n => n.addEventListener("click", e => {
+/** Handles calculator logic and errors */
+function tryCalculator(pressed) {
     errorMsg.textContent = '';
     try {
-        if (mode==='quick') quickCalc(e);
-        else if (mode==='expression') expressionCalc(e);
+        if (mode==='simple') simpleCalculator(pressed);
+        else if (mode==='expression') expressionCalculator(pressed);
 
     } catch (e) {
-        if (mode==='quick') {
+        if (mode==='simple') {
             errorMsg.textContent = `ERROR: ${e.message}`;
             savedNum = '';
             operator = '';
@@ -241,11 +239,62 @@ buttons.forEach(n => n.addEventListener("click", e => {
             errorMsg.textContent = `ERROR: ${e.message}`;
             equalOperatorDisplay = '';
             inputNum = '';
+            displayTextBot.textContent = 'ERROR';
         }
     }
+}
+
+function toggleMode() {
+    if (mode==='simple') {
+        mode = 'expression';
+        document.querySelector('[data-value="("]').classList.remove('--disabled');
+        document.querySelector('[data-value=")"]').classList.remove('--disabled');
+    }
+    else {
+        mode = 'simple';
+        document.querySelector('[data-value="("]').classList.add('--disabled');
+        document.querySelector('[data-value=")"]').classList.add('--disabled');
+    }
+    savedNum = '';
+    operator = '';
+    inputNum = '';
+    expression = '';
+    equalOperatorDisplay = '';
+    displayTextTop.textContent = '';
+    displayTextBot.textContent = '0';
+    modeMsg.textContent = `Current mode: ${mode.toUpperCase()}`;
+}
+
+//Listeners for the buttons
+buttons.forEach(n => n.addEventListener("click", e => {
+    if (e.target.dataset.value === 'MODE') toggleMode();
+    else tryCalculator(e.target.dataset.value);
 }));
 
+//Keyboard listener
+window.addEventListener("keydown", function(e) {
+    if (e.key==='m') return toggleMode();
 
+    let pressed = e.key;
+    let keys = ['1','2','3','4','5','6','7','8','9','0',
+                '.',',','(',')','c','Backspace','√','!',
+                '%','^','/','×','*','+','-','Enter','='];
+
+    if (keys.includes(pressed)) {
+        if (pressed==='/') e.preventDefault();
+        else if (pressed==='Backspace') pressed='C';
+        else if (pressed==='c') pressed='CA';
+        else if (pressed==='*') pressed='×';
+        else if (pressed==='÷') pressed='/';
+        else if (pressed==='Enter') pressed='=';
+        else if (pressed===',') pressed='.';
+
+        errorMsg.textContent = '';
+        tryCalculator(pressed);
+    }
+});
+
+toggleMode();
 
 // SUPORT FUNCTIONS //
 /** Returns true if character is an operator */
@@ -274,18 +323,37 @@ const findMatchingParenthesis = (expr, start) => {
     throw new Error('Invalid expression')
 };
 
+/** Add spaces around operators, unless it is a negation operator */
+const beautifyExpression = str => {
+    let result = '';
+    
+    for (let i = 0; i < str.length; i++) {
+        if (['^','×','/','+','-'].includes(str[i])) {
+            if (isNegationOp(str,i)) result += ` ${str[i]}`;
+            else result += ` ${str[i]} `;
+        } else {
+            result += str[i];
+        }
+    }
+
+    return result;
+}
+
 /** Performs a basic operations between two numbers */
 function operate(a, b, op) {
-    if (op==='+') return a+b;
-    else if (op==='-') return a-b;
-    else if (op==='×'||op==='*') return a*b;
+    let result;
+    if (op==='+') result = a+b;
+    else if (op==='-') result = a-b;
+    else if (op==='×'||op==='*') result = a*b;
     else if (op==='÷'||op==='/') {
-        if (b!==0) return a/b;
+        if (b!==0) result = a/b;
         else throw new Error('Tried to divide by 0')
     }
-    else if (op==='%') return a%b;
-    else if (op==='^') return a**b;
+    else if (op==='%') result = a%b;
+    else if (op==='^') result = a**b;
     else return NaN;
+
+    return +result.toFixed(8)
     
 }
 
@@ -300,14 +368,14 @@ function factorial(n) {
 /** Calculates sqrt, throws error if recieves negative number */
 function getSqrt(n) {
     if (n<0) throw new Error('Tried to find square root of a negative number')
-    return Math.sqrt(n);
+    return +(Math.sqrt(n)).toFixed(8);
 }
 
 //  CALCULATOR FUNCTIONS //
 /** Solves an expression in string format */
 function solveExpression(expr) {
     let exprArray = exprToArray(expr);
-    return calculateExpression(exprArray);
+    return expressionParser(exprArray);
 }
 
 /** Transforms a string into an array with numbers and operators - solves all expressions in parenthesis */
@@ -349,7 +417,7 @@ function exprToArray(expr) {
 }
 
 /** Calculates an expression inside an array - Uses P-E-MD-AS, from left to right when ambiguous */
-function calculateExpression(arr) {
+function expressionParser(arr) {
     const operations = [['^'],['×','*','/','÷'],['+','-']];
 
     //handles unary operations

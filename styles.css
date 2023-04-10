@@ -1,11 +1,12 @@
 :root {
     --bg-color: #101010;
+    --calc-color: #404040;
     --font-color: white;
 
-    --btn-number-color: orange;
-    --btn-clear-color: red;
+    --btn-number-color: rgb(230, 150, 0);
+    --btn-clear-color: rgb(201, 47, 13);
     --btn-operator-color: darkcyan;
-    --btn-special-op-color: #507f92;
+    --btn-special-op-color: #607d88;
 }
 
 * {
@@ -27,15 +28,25 @@ button{
 	outline: inherit;
     flex-grow: 1;
     flex-basis: content;
+    
     width: 100%;
     color: var(--font-color);
-    padding: 8px 8px;
+    filter: saturate(.8);
+    padding: 4px;
     border-radius: 2px;
     background-color: var(--btn-number-color);
+    transition: opacity .2s ease-in-out;
+}
+
+button.--disabled {
+    cursor: auto;
+    pointer-events: none;
+    opacity: 20%;
 }
 
 button:hover {
     filter: brightness(1.1);
+    filter: saturate(1.5);
     transform: translateY(-1px);
 }
 
@@ -48,7 +59,13 @@ html {
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
     margin: 0 auto;
+    height: 100vh;
 }
 
 .main {
@@ -62,15 +79,16 @@ body {
 }
 
 .calculator {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 20px;
-    width: 330px;
+    width: min(330px, 100vw);
     padding: 15px;
-    border-radius: 10px;
-    background-color: #404040;
+    border-radius: 5px;
+    background-color: var(--calc-color);
     box-shadow: 
         0 0 7px rgb(10, 10, 10, 0.8),
         0 0 15px rgba(10, 10, 10, 0.3);
@@ -92,19 +110,30 @@ body {
     border-radius: 4px;
     background-color: #101010;
     padding: 5px 10px;
+    box-shadow: 
+        inset 0 0 4px rgb(10, 10, 10, 0.8),
+        inset 0 0 8px rgba(10, 10, 10, 0.3);
 }
 
 .display__bot-text {
-    color: white;
+    color: whitesmoke;
     text-align: end;
     font-size: 2.5rem;
 }
 
 .display__top-text {
-    color: white;
+    color: whitesmoke;
     opacity: .5;
     text-align: end;
     font-size: 1rem;
+}
+
+.main__mode-msg {
+    top: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    text-align: center;
+    color: var(--calc-color);
 }
 
 .main__error-msg {
@@ -120,10 +149,11 @@ body {
     gap: 6px;
     font-size: 2rem;
     font-weight: 600;
+    user-select: none;
 
     grid-template-areas: 
-    "c  ce  .  .  ." 
-    "pct  sqr  fac  p1  p2" 
+    "c  ca  .  mode  mode" 
+    "fac  sqr  pct  p1  p2" 
     "n7  n8  n9  div  exp" 
     "n4  n5  n6  mtp  add" 
     "n1  n2  n3  sub  add" 
@@ -157,6 +187,7 @@ body {
 [data-value="-"] { grid-area: sub; }
 [data-value="+-"] { grid-area: inv; }
 [data-value="="] { grid-area: eq; }
+[data-value="MODE"] { grid-area: mode; }
 
 [data-type="clear"] {
     background-color: var(--btn-clear-color);
@@ -174,3 +205,25 @@ body {
     background-color: var(--btn-special-op-color);
 }
 
+.footer {
+    display: flex;
+    align-items: flex-end;
+    margin: 0 auto;
+}
+
+.footer__author {
+    font-family: 'Roboto', sans-serif;
+    font-weight: normal;
+    font-size: .8rem;
+    opacity: 30%;
+    text-align: center;
+    color: white;
+    padding: 20px;
+
+    transition: opacity .2s ease-in-out;
+}
+
+.footer__author:hover {
+    opacity: 50%;
+    color: white;
+}
