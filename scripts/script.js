@@ -117,6 +117,8 @@ function simpleCalculator(pressed) {
 */
 function expressionCalculator(pressed) {
     //basic number input logic
+    let lastChar = (expression+inputNum).slice(-1);
+    
     if (!isNaN(pressed)) {
         if (pressed!=='0' && inputNum==='0') inputNum = pressed;
         else if (inputNum!=='0') inputNum += pressed;
@@ -138,7 +140,7 @@ function expressionCalculator(pressed) {
             expression += inputNum;
             inputNum = '';
         }
-        else expression += '√';
+        else if (!['√','!','%',')'].includes(lastChar)) expression += '√';
 
     }
     else if (pressed === '!') {
@@ -147,7 +149,7 @@ function expressionCalculator(pressed) {
             expression += '!';
             inputNum = '';
         }
-        else expression += '!';
+        else if (lastChar && !isOperator(lastChar)) expression += '!';
 
     }
     else if (pressed === '%') {
@@ -156,13 +158,12 @@ function expressionCalculator(pressed) {
             expression += '%';
             inputNum = '';
         }
-        else expression += '%';
+        else  if (lastChar && !isOperator(lastChar)) expression += '%';
 
     }
     //cant close parenthesis on an operator or if there is nothing
     else if (pressed === ')') {
-        let lastChar = (expression+inputNum).slice(-1);
-        if (lastChar && !isOperator(lastChar) && lastChar!=='(') {
+        if (lastChar && (!isOperator(lastChar)||['!','%'].includes(lastChar)) && lastChar!=='(') {
             expression += inputNum;
             expression += pressed;
             inputNum = '';
@@ -171,7 +172,6 @@ function expressionCalculator(pressed) {
     }
     //if you open a parenthesis without an operator before, add multiplication by default
     else if (pressed === '(') {
-        let lastChar = (expression+inputNum).slice(-1);
         expression += inputNum;
         if (['!','%',')'].includes(lastChar) || (lastChar && !isNaN(lastChar))) expression += '×';
         expression += pressed;
@@ -179,12 +179,11 @@ function expressionCalculator(pressed) {
 
     }
     else if (['^','×','/','+','-','('].includes(pressed)) {
-        let lastChar = (expression+inputNum).slice(-1);
         if (['^','×','/','+','-'].includes(lastChar)) {
             expression = expression.slice(0,-1);
             expression += pressed;
         }
-        else if (lastChar && lastChar!=='('){
+        else if (lastChar && !['(','√'].includes(lastChar)){
             expression += inputNum;
             expression += pressed;
             inputNum = '';
