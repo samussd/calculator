@@ -223,7 +223,7 @@ function expressionCalculator(pressed) {
 
 /** Handles calculator logic and errors */
 function tryCalculator(pressed) {
-    errorMsg.textContent = '';
+    errorMsg.innerHTML = '&nbsp';
     try {
         if (mode==='simple') simpleCalculator(pressed);
         else if (mode==='expression') expressionCalculator(pressed);

@@ -61,7 +61,7 @@ html {
 body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 
     margin: 0 auto;
@@ -71,11 +71,12 @@ body {
 .main {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     gap: 15px;
     
-    margin: 50px auto 0;
+    height: 100%;
+    margin: 20px auto 0;
 }
 
 .calculator {
