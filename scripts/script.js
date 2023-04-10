@@ -45,6 +45,7 @@ function simpleCalculator(pressed) {
         inputNum = factorial(+inputNum).toString();
 
     }
+    //if there is a saved number, perform operation based on it
     else if (pressed === '%' && inputNum) { // 50+10%=55; 50x10%=5
         if (!savedNum) {
             equalOperatorDisplay = `${inputNum}% =`;
@@ -55,6 +56,8 @@ function simpleCalculator(pressed) {
             if (operator==='-') inputNum = +savedNum - (+inputNum/100)*+savedNum;
             if (operator==='+') inputNum = +savedNum + (+inputNum/100)*+savedNum;
             if (operator==='×'||operator==='*') inputNum = (+inputNum/100)*+savedNum;
+            operator = '';
+            savedNum = '';
         }
 
     }
