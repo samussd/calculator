@@ -56,6 +56,7 @@ function simpleCalculator(pressed) {
             if (operator==='-') inputNum = +savedNum - (+inputNum/100)*+savedNum;
             if (operator==='+') inputNum = +savedNum + (+inputNum/100)*+savedNum;
             if (operator==='×'||operator==='*') inputNum = (+inputNum/100)*+savedNum;
+            inputNum = +(+inputNum).toFixed(8);
             operator = '';
             savedNum = '';
         }
@@ -432,7 +433,7 @@ function expressionParser(arr) {
             arr.splice(i, 2, getSqrt(arr[i+1]));
         }
         else if (arr[i] === '%') {
-            arr.splice(i-1, 2, arr[i-1]/100);
+            arr.splice(i-1, 2, +(arr[i-1]/100).toFixed(8));
         }
     }
 
