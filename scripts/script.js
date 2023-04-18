@@ -22,7 +22,7 @@ function simpleCalculator(pressed) {
     //basic number input logic
     if (!isNaN(pressed)) {
         if (pressed!=='0' && inputNum==='0') inputNum = pressed;
-        else if (inputNum!=='0') inputNum += pressed;
+        else if (inputNum!=='0' && inputNum.length<13) inputNum += pressed;
         
     }
     else if (pressed === '.') {
@@ -121,7 +121,7 @@ function expressionCalculator(pressed) {
     
     if (!isNaN(pressed)) {
         if (pressed!=='0' && inputNum==='0') inputNum = pressed;
-        else if (inputNum!=='0') inputNum += pressed;
+        else if (inputNum!=='0' && inputNum.length<13) inputNum += pressed;
         
     }
     else if (pressed === '.') {;
@@ -223,7 +223,7 @@ function expressionCalculator(pressed) {
 
 /** Handles calculator logic and errors */
 function tryCalculator(pressed) {
-    errorMsg.innerHTML = '&nbsp';
+    errorMsg.innerHTML = '\u00A0';
     try {
         if (mode==='simple') simpleCalculator(pressed);
         else if (mode==='expression') expressionCalculator(pressed);
@@ -445,5 +445,6 @@ function expressionParser(arr) {
             }
         }
     })
+    
     return arr[0];
 }
